@@ -19,13 +19,13 @@ public class Solution {
     // Complete the maxRegion function below.
     static int maxRegion(int[][] grid) {
         boolean [][] v = new boolean[grid.length][grid[0].length];
-        return dfs(grid, v, 0, 0);
+        return dfs(grid, v, 0, 0, 0);
     }
 
-    static int dfs(int [][] grid, boolean [][] visited, int si, int sj) {
+    static int dfs(int [][] grid, boolean [][] visited, int si, int sj, int max) {
         int ll = grid.length;
         int lc = grid[0].length;
-        int acc = 0, accAux = 1;
+        int acc = 1;
         for (int i = si; i < ll ; i++) {
             for (int j = sj; j < lc ; j++) {
                 if (grid[i][j] == 1 && ! visited[i][j]) {
@@ -33,15 +33,15 @@ public class Solution {
                     for (int[] move : moves) {
                         int ii = move[0] + i;
                         int jj = move[1] + j;
-                        // limit of graph and
+                        // limit of graph and not visited and connected
                         if (ii > -1 && ii < ll && jj > -1 && jj < lc
                                 && ! visited[ii][jj] && grid[ii][jj] == 1) {
-                            accAux += dfs(grid, visited, ii, jj);
+                            acc += dfs(grid, visited, ii, jj, max);
                         }
                     }
                 }
             }
-            acc = Math.max(acc, accAux);
+            acc = Math.max(acc, max);
         }
         return acc;
     }
