@@ -1,35 +1,28 @@
 package solution;
 
 import java.util.*;
+
+/**
+ * https://www.hackerrank.com/challenges/ctci-bfs-shortest-reach/problem?h_l=interview&playlist_slugs%5B%5D%5B%5D=interview-preparation-kit&playlist_slugs%5B%5D%5B%5D=graphs
+ * DONE
+ * */
+
 public class Solution2 {
 
-
-    static class Edge {
-        private int u, v, w;
-        Edge(int u, int v,  int w) {
-            this.u = u;
-            this.v = v;
-            this.w = w;
-        }
-    }
     public static class Graph {
-
-        private static ArrayList<ArrayList<Edge>> graph;
-        private static int size;
-        public Graph(int size) {
-            graph = new ArrayList<>();
-            for (int i = 0; i<size; i++) {
-                graph.add(new ArrayList<>());
-            }
+        private int [][] graph;
+        private int size;
+        Graph(int size) {
+            this.graph = new int [size][size];
             this.size = size;
         }
 
-        public void addEdge(int p, int q) {
-            graph.get(p).add(new Edge(p, q, 6));
-            graph.get(q).add(new Edge(q, p, 6));
+        void addEdge(int p, int q) {
+            graph[p][q] = 6;
+            graph[q][p] = 6;
         }
 
-        public int[] shortestReach(int startId) { // 0 indexed
+        int[] shortestReach(int startId) { // 0 indexed
             int [] distances = new int[size];
             Arrays.fill(distances, -1);
             distances[startId] = 0;
@@ -37,21 +30,20 @@ public class Solution2 {
             return distances;
         }
 
-        private static void bfs(int [] distances, int source) {
-            Queue<Edge> queue = new LinkedList<>();
-            Edge e = graph.get(source).get(0);
-            queue.add(e);
+        private void bfs(int [] distances, int source) {
+            Queue<Integer> queue = new LinkedList<>();
+            queue.add(source);
             boolean [] visited = new boolean[distances.length];
-            Edge [] parent = new Edge[distances.length];
+            int [] parent = new int[distances.length];
             visited[source] = true;
             while (!queue.isEmpty()) {
-                Edge u = queue.poll();
-                for (Edge v : graph.get(u.u)) {
-                    if (!visited[v.v]) {
-                        visited[v.v]    = true;
-                        parent[v.v]     = u;
-                        distances[v.v]  =  distances[parent[v.v].u] + v.w;
-                        queue.add(new Edge(v.v, v.v, 0));
+                int u = queue.poll();
+                for (int v = 1; v < this.size; v++) {
+                    if (graph[u][v] != 0 && ! visited[v]) {
+                        visited[v]    = true;
+                        parent[v]     = u;
+                        distances[v]  =  distances[parent[v]] + graph[u][v];
+                        queue.add(v);
                     }
                 }
             }
@@ -69,15 +61,12 @@ public class Solution2 {
             for (int i = 0; i < m; i++) {
                 int u = scanner.nextInt();
                 int v = scanner.nextInt();
-
                 // add each edge to the graph
                 graph.addEdge(u, v);
             }
-
             // Find shortest reach from node s
             int startId = scanner.nextInt();
             int[] distances = graph.shortestReach(startId);
-
             for (int i = 1; i < distances.length; i++) {
                 if (i != startId) {
                     System.out.print(distances[i]);
@@ -86,7 +75,6 @@ public class Solution2 {
             }
             System.out.println();
         }
-
         scanner.close();
     }
 }
