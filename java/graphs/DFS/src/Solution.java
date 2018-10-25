@@ -3,6 +3,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * https://www.hackerrank.com/challenges/ctci-connected-cell-in-a-grid/problem?h_l=interview&playlist_slugs%5B%5D%5B%5D=interview-preparation-kit&playlist_slugs%5B%5D%5B%5D=graphs
+ * */
+
 public class Solution {
 
     static final int [][] moves = {
@@ -18,32 +22,58 @@ public class Solution {
 
     // Complete the maxRegion function below.
     static int maxRegion(int[][] grid) {
-        boolean [][] v = new boolean[grid.length][grid[0].length];
-        return dfs(grid, v, 0, 0, 0);
+        int ll = grid.length, lc = grid[0].length;
+        boolean [][] v = new boolean[ll][lc];
+        return count(grid, v, ll, lc);
+        //return dfs(grid, v, ll, lc, 0, 0, 0);
     }
 
-    static int dfs(int [][] grid, boolean [][] visited, int si, int sj, int max) {
-        int ll = grid.length;
-        int lc = grid[0].length;
+    static int count(int [][] grid,  boolean [][] visited, int ll, int lc) {
+        int max = 0;
+        for (int i = 0; i < ll ; i++) {
+            for (int j = 0; j < lc ; j++) {
+                if (grid[i][j] == 1 && !visited[i][j]) {
+                    max = Math.max(max, count(grid, visited, i, j, ll, lc));
+                }
+            }
+        }
+        return max;
+    }
+
+    static int count(int [][] matrix, boolean [][] visited, int i, int j, int ll, int lc) {
         int acc = 1;
-        for (int i = si; i < ll ; i++) {
-            for (int j = sj; j < lc ; j++) {
-                if (grid[i][j] == 1 && ! visited[i][j]) {
-                    visited[i][j] = true;
+        visited[i][j] = true;
+        for (int[] move : moves) {
+            int ii = move[0] + i;
+            int jj = move[1] + j;
+            if (ii > -1 && ii < ll && jj > -1 && jj < lc && ! visited[ii][jj] && matrix[ii][jj] == 1) {
+                acc += count(matrix, visited, ii, jj, ll, lc);
+            }
+        }
+        return acc;
+    }
+
+    static int dfs(int [][] grid, boolean [][] visited, int ll, int lc, int si, int sj, int max) {
+        int acc = 0;
+        for (int i = 0; i < ll ; i++) {
+            for (int j = 0; j < lc ; j++) {
+                si += i;
+                sj += j;
+                if (grid[si][sj] == 1 && ! visited[si][sj]) {
+                    visited[si][sj] = true;
+                    acc = 1;
                     for (int[] move : moves) {
-                        int ii = move[0] + i;
-                        int jj = move[1] + j;
+                        int ii = move[0] + si;
+                        int jj = move[1] + sj;
                         // limit of graph and not visited and connected
-                        if (ii > -1 && ii < ll && jj > -1 && jj < lc
-                                && ! visited[ii][jj] && grid[ii][jj] == 1) {
-                            acc += dfs(grid, visited, ii, jj, max);
+                        if (ii > -1 && ii < ll && jj > -1 && jj < lc && ! visited[ii][jj] && grid[ii][jj] == 1) {
+                            acc += dfs(grid, visited, ll, lc,  ii, jj, max);
                         }
                     }
                 }
             }
-            acc = Math.max(acc, max);
         }
-        return acc;
+        return Math.max(acc, max);
     }
 
     private static final Scanner scanner = new Scanner(System.in);
