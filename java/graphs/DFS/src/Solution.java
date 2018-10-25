@@ -54,26 +54,25 @@ public class Solution {
     }
 
     static int dfs(int [][] grid, boolean [][] visited, int ll, int lc, int si, int sj, int max) {
-        int acc = 0;
-        for (int i = 0; i < ll ; i++) {
-            for (int j = 0; j < lc ; j++) {
-                si += i;
-                sj += j;
-                if (grid[si][sj] == 1 && ! visited[si][sj]) {
-                    visited[si][sj] = true;
-                    acc = 1;
-                    for (int[] move : moves) {
-                        int ii = move[0] + si;
-                        int jj = move[1] + sj;
-                        // limit of graph and not visited and connected
-                        if (ii > -1 && ii < ll && jj > -1 && jj < lc && ! visited[ii][jj] && grid[ii][jj] == 1) {
-                            acc += dfs(grid, visited, ll, lc,  ii, jj, max);
-                        }
-                    }
+        if (si == ll || sj == lc)
+            return 0;
+        else if (grid[si][sj] == 0 || visited[si][sj]) {
+            int a = dfs(grid, visited, ll, lc,  si, sj+1, max);
+            int b = dfs(grid, visited, ll, lc,  si+1, sj, max);
+            return a + b;
+        }
+        else {
+            int acc = 1;
+            for (int[] move : moves) {
+                int ii = move[0] + si;
+                int jj = move[1] + sj;
+                // limit of graph and not visited and connected
+                if (ii > -1 && ii < ll && jj > -1 && jj < lc && ! visited[ii][jj] && grid[ii][jj] == 1) {
+                    acc += dfs(grid, visited, ll, lc,  ii, jj, max);
                 }
             }
+            return Math.max(acc, max);
         }
-        return Math.max(acc, max);
     }
 
     private static final Scanner scanner = new Scanner(System.in);
