@@ -24,8 +24,8 @@ public class Solution {
     static int maxRegion(int[][] grid) {
         int ll = grid.length, lc = grid[0].length;
         boolean [][] v = new boolean[ll][lc];
-        return count(grid, v, ll, lc);
-        //return dfs(grid, v, ll, lc, 0, 0, 0);
+        //return count(grid, v, ll, lc);
+        return dfs(grid, v, ll, lc, 0, 0, 0);
     }
 
     static int count(int [][] grid,  boolean [][] visited, int ll, int lc) {
@@ -63,6 +63,7 @@ public class Solution {
         }
         else {
             int acc = 1;
+            visited[si][sj] = true;
             for (int[] move : moves) {
                 int ii = move[0] + si;
                 int jj = move[1] + sj;
