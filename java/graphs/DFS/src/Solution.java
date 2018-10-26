@@ -25,7 +25,7 @@ public class Solution {
         int ll = grid.length, lc = grid[0].length;
         boolean [][] v = new boolean[ll][lc];
         //return count(grid, v, ll, lc);
-        return dfs(grid, v, ll, lc, 0, 0, 0);
+        return dfs(grid, v, ll, lc, 0, 0);
     }
 
     static int count(int [][] grid,  boolean [][] visited, int ll, int lc) {
@@ -53,13 +53,13 @@ public class Solution {
         return acc;
     }
 
-    static int dfs(int [][] grid, boolean [][] visited, int ll, int lc, int si, int sj, int max) {
+    static int dfs(int [][] grid, boolean [][] visited, int ll, int lc, int si, int sj) {
         if (si == ll || sj == lc)
             return 0;
         else if (grid[si][sj] == 0 || visited[si][sj]) {
-            int a = dfs(grid, visited, ll, lc,  si, sj+1, max);
-            int b = dfs(grid, visited, ll, lc,  si+1, sj, max);
-            return a + b;
+            int a = dfs(grid, visited, ll, lc,  si, sj+1);
+            int b = dfs(grid, visited, ll, lc,  si+1, sj);
+            return Math.max(a, b);
         }
         else {
             int acc = 1;
@@ -69,10 +69,10 @@ public class Solution {
                 int jj = move[1] + sj;
                 // limit of graph and not visited and connected
                 if (ii > -1 && ii < ll && jj > -1 && jj < lc && ! visited[ii][jj] && grid[ii][jj] == 1) {
-                    acc += dfs(grid, visited, ll, lc,  ii, jj, max);
+                    acc += dfs(grid, visited, ll, lc,  ii, jj);
                 }
             }
-            return Math.max(acc, max);
+            return acc;
         }
     }
 
