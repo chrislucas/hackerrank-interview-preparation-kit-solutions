@@ -39,7 +39,6 @@ fun median(data: Array<Int>) : Double {
 }
 
 
-
 fun medianInRange(data: Array<Int>, p: Int, q: Int) : Double{
     var maxValue = data[p]
     for (i in (p+1..q)) {
